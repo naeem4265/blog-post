@@ -17,8 +17,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: npm ci
-      - run: npm run lint || true   # lint errors -> warnings
+      - name: Install dependencies
+        run: npm ci || npm install
+      - name: Run linter
+        run: npm run lint || true   # fail → warning
       - name: SAST Security Scan
         run: npx snyk test --severity-threshold=high
         env:
@@ -32,7 +34,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: npm ci
+      - name: Install dependencies
+        run: npm ci || npm install
       - name: Run tests with coverage
         run: |
           npm run test -- --coverage \
@@ -47,7 +50,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-      - name: Build & Push
+      - name: Build & Push Docker Image
         run: |
           docker build -t $IMAGE_NAME:latest -t $IMAGE_NAME:${{ github.sha }} .
           docker push $IMAGE_NAME:latest
@@ -62,7 +65,7 @@ jobs:
         run: |
           docker run -d -p 5000:5000 --name todo-api $IMAGE_NAME:latest
           sleep 5
-      - name: Run k6 load test
+      - name: Performance Test (P95 < 200ms)
         run: |
           npm install -g k6
           k6 run perf-tests/p95.js
