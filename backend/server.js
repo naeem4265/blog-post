@@ -1,6 +1,7 @@
 import express from "express";
 import { Pool } from "pg";
 import postsRouterFactory from "./routes/posts.js";
+import pkg from "./package.json" assert { type: "json" };
 
 const app = express();
 app.use(express.json());
@@ -40,6 +41,12 @@ app.get("/health", async (_req, res) => {
   } catch (e) {
     res.status(500).json({ ok: false, error: e?.message || "db error" });
   }
+});
+
+// Version endpoint
+app.get("/version", (_req, res) => {
+  const version = process.env.RELEASE_VERSION || pkg.version || "unknown";
+  res.json({ version });
 });
 
 // API routes
