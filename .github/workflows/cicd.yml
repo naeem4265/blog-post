@@ -35,6 +35,13 @@ jobs:
 
       - name: Deploy locally with Docker Compose
         run: |
-          export RELEASE_VERSION=${{ env.RELEASE_VERSION }}
+          # Write updated RELEASE_VERSION into .env
+          sed -i "s/^RELEASE_VERSION=.*/RELEASE_VERSION=${{ env.RELEASE_VERSION }}/" .env || echo "RELEASE_VERSION=${{ env.RELEASE_VERSION }}" >> .env
+          
+          # Confirm .env
+          echo "Updated .env:"
+          cat .env
+
+          # Pull and restart services
           docker compose pull
           docker compose up -d
