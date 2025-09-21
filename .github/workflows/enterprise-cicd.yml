@@ -25,9 +25,12 @@ jobs:
       - name: Run linter
         run: npm run lint || true   # fail → warning
       - name: SAST Security Scan
-        run: npx snyk test --severity-threshold=high
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        uses: aquasecurity/trivy-action@0.20.0
+        with:
+          scan-type: fs
+          severity: CRITICAL,HIGH
+          exit-code: 1
+          ignore-unfixed: true
 
   test:
     runs-on: ubuntu-latest
