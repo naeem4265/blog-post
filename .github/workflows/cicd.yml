@@ -32,3 +32,8 @@ jobs:
         run: |
           docker build -t $FRONTEND_IMAGE:${{ env.RELEASE_VERSION }} ./frontend
           docker push $FRONTEND_IMAGE:${{ env.RELEASE_VERSION }}
+
+      - name: Deploy
+        run: |
+          docker compose down
+          docker compose up -d
