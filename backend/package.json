@@ -16,11 +16,19 @@
   "devDependencies": {
     "@babel/core": "^7.28.4",
     "@babel/preset-env": "^7.28.3",
+    "core-js": "^3.45.1",
     "jest": "^29.7.0",
     "supertest": "^7.1.4"
   },
   "jest": {
+    "testEnvironment": "node",
+    "transform": {},
     "collectCoverage": true,
+    "coverageDirectory": "coverage",
+    "coverageReporters": [
+      "text",
+      "lcov"
+    ],
     "coverageThreshold": {
       "global": {
         "branches": 85,
@@ -29,7 +37,11 @@
         "statements": 85
       }
     },
-    "testEnvironment": "node",
-    "transform": {}
+    "testMatch": [
+      "**/__tests__/**/*.test.js"
+    ],
+    "setupFiles": [
+      "./test/helpers/setup.js"
+    ]
   }
 }

@@ -1,8 +1,13 @@
 import express from "express";
 import { Pool } from "pg";
 import postsRouterFactory from "./routes/posts.js";
-import pkg from "./package.json" assert { type: "json" };
+import { readFile } from 'fs/promises';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 import cors from "cors";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const app = express();
 
@@ -36,6 +41,15 @@ async function init() {
       created_at TIMESTAMPTZ DEFAULT now()
     );
   `);
+}
+
+// Read package.json for version
+let pkg = { version: '0.0.0' };
+try {
+  const pkgData = await readFile(new URL('./package.json', import.meta.url), 'utf8');
+  pkg = JSON.parse(pkgData);
+} catch (err) {
+  console.warn('Could not read package.json:', err.message);
 }
 
 app.get("/health", async (_req, res) => {
