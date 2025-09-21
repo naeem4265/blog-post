@@ -21,10 +21,10 @@ services:
       timeout: 3s
       retries: 10
     networks:
-      - blog-network   # ← add this
+      - blog-network
 
   backend:
-    build: ./backend
+    image: ${DOCKER_USERNAME}/todo-backend:${RELEASE_VERSION}
     restart: unless-stopped
     environment:
       NODE_ENV: production
@@ -34,6 +34,7 @@ services:
       DB_NAME: ${POSTGRES_DB}
       DB_USER: ${POSTGRES_USER}
       DB_PASSWORD: ${POSTGRES_PASSWORD}
+      RELEASE_VERSION: ${RELEASE_VERSION}
     depends_on:
       db:
         condition: service_healthy
@@ -48,7 +49,7 @@ services:
       - blog-network
 
   frontend:
-    build: ./frontend
+    image: ${DOCKER_USERNAME}/todo-frontend:${RELEASE_VERSION}
     restart: unless-stopped
     depends_on:
       - backend
