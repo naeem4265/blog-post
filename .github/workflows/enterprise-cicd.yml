@@ -84,13 +84,16 @@ jobs:
     needs: build
     steps:
       - uses: actions/checkout@v4
+      - name: Install k6
+        uses: grafana/k6-action@v0.3.0
+        with:
+          install_deps: true
       - name: Run container
         run: |
           docker run -d -p 5000:5000 --name todo-api $IMAGE_NAME:latest
           sleep 5
       - name: Performance Test (P95 < 200ms)
         run: |
-          npm install -g k6
           k6 run perf-tests/p95.js
       - name: Cleanup
         run: docker rm -f todo-api
