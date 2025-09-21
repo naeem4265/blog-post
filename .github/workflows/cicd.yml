@@ -10,7 +10,7 @@ env:
 
 jobs:
   docker-build-push:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted   # instead of ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -33,7 +33,8 @@ jobs:
           docker build -t $FRONTEND_IMAGE:${{ env.RELEASE_VERSION }} ./frontend
           docker push $FRONTEND_IMAGE:${{ env.RELEASE_VERSION }}
 
-      - name: Deploy
+      - name: Deploy locally with Docker Compose
         run: |
-          docker compose down
+          export RELEASE_VERSION=${{ env.RELEASE_VERSION }}
+          docker compose pull
           docker compose up -d
