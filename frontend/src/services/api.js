@@ -23,7 +23,7 @@ export async function createPost(payload) {
 }
 
 export async function getVersion() {
-  const res = await fetch(`/version`);
+  const res = await fetch(`${BASE}/version`);
   if (!res.ok) throw new Error("Failed to load version");
   return res.json();
 }

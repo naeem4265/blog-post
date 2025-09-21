@@ -44,7 +44,7 @@ app.get("/health", async (_req, res) => {
 });
 
 // Version endpoint
-app.get("/version", (_req, res) => {
+app.get("/api/version", (_req, res) => {
   const version = process.env.RELEASE_VERSION || `v${pkg.version}` || "unknown";
   res.json({ version });
 });
