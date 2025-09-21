@@ -2,8 +2,12 @@ import express from "express";
 import { Pool } from "pg";
 import postsRouterFactory from "./routes/posts.js";
 import pkg from "./package.json" assert { type: "json" };
+import cors from "cors";
 
 const app = express();
+
+// Enable CORS for all routes
+app.use(cors());
 app.use(express.json());
 
 const {
@@ -52,7 +56,13 @@ app.get("/api/version", (_req, res) => {
 // API routes
 app.use("/api/posts", postsRouterFactory(pool));
 
-app.listen(PORT, async () => {
-  await init();
-  console.log(`Backend listening on ${PORT}`);
-});
+// Export the app for testing
+export { app };
+
+// Only start the server if this file is run directly
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, async () => {
+    await init();
+    console.log(`Backend listening on ${PORT}`);
+  });
+}
