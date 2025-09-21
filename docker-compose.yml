@@ -24,7 +24,7 @@ services:
       - blog-network   # ← add this
 
   backend:
-    build: ./backend
+    image: ${DOCKER_USERNAME}/todo-backend:${RELEASE_VERSION}
     restart: unless-stopped
     environment:
       NODE_ENV: production
@@ -48,7 +48,7 @@ services:
       - blog-network
 
   frontend:
-    build: ./frontend
+    image: ${DOCKER_USERNAME}/todo-frontend:${RELEASE_VERSION}
     restart: unless-stopped
     depends_on:
       - backend
