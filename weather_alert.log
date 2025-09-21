@@ -1,0 +1,4 @@
+2025-09-15 23:17:44,527 - INFO - Making request to: https://api.openweathermap.org/data/2.5/weather?q=Dhaka&appid=[REDACTED]&units=metric
+2025-09-15 23:17:44,918 - INFO - Dhaka, BD: 26.0°C, Drizzle
+2025-09-15 23:17:57,911 - INFO - Making request to: https://api.openweathermap.org/data/2.5/weather?q=Dhaka&appid=[REDACTED]&units=metric
+2025-09-15 23:17:58,175 - INFO - Dhaka, BD: 26.0°C, Drizzle
