@@ -33,7 +33,10 @@ jobs:
         with:
           node-version: 20
       - run: npm ci
-      - run: npm run test -- --coverage --coverageThreshold='{ "global": { "branches": 85, "functions": 85, "lines": 85, "statements": 85 }}'
+      - name: Run tests with coverage
+        run: |
+          npm run test -- --coverage \
+            --coverageThreshold='{"global": {"branches": 85, "functions": 85, "lines": 85, "statements": 85}}'
 
   build:
     runs-on: ubuntu-latest
