@@ -1,5 +1,5 @@
 # Use Node.js 18 Alpine
-FROM node:18-alpine
+FROM node:20-alpine
 
 # Create app user (non-root)
 RUN addgroup -S app && adduser -S -G app app
