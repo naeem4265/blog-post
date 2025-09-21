@@ -110,8 +110,8 @@ jobs:
     steps:
       - name: Deploy via docker compose
         run: |
-          docker compose -f docker-compose.staging.yml pull
-          docker compose -f docker-compose.staging.yml up -d
+          docker compose -f docker-compose.yml pull
+          docker compose -f docker-compose.yml up -d
 
   staging-smoke-tests:
     runs-on: ubuntu-latest
@@ -126,13 +126,13 @@ jobs:
 
   deploy-to-prod:
     runs-on: self-hosted
-    needs: staging-smoke-tests
+    needs: build
     if: success()
     steps:
       - name: Deploy via docker compose
         run: |
-          docker compose -f docker-compose.prod.yml pull
-          docker compose -f docker-compose.prod.yml up -d
+          docker compose -f docker-compose.yml pull
+          docker compose -f docker-compose.yml up -d
 
   rollback:
     runs-on: self-hosted
