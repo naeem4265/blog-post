@@ -10,7 +10,7 @@ env:
 
 jobs:
   docker-build-push:
-    runs-on: self-hosted   # instead of ubuntu-latest
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
 
@@ -33,15 +33,26 @@ jobs:
           docker build -t $FRONTEND_IMAGE:${{ env.RELEASE_VERSION }} ./frontend
           docker push $FRONTEND_IMAGE:${{ env.RELEASE_VERSION }}
 
-      - name: Deploy locally with Docker Compose
+      - name: Update .env with new RELEASE_VERSION
         run: |
-          # Write updated RELEASE_VERSION into .env
-          sed -i "s/^RELEASE_VERSION=.*/RELEASE_VERSION=${{ env.RELEASE_VERSION }}/" .env || echo "RELEASE_VERSION=${{ env.RELEASE_VERSION }}" >> .env
-          
-          # Confirm .env
-          echo "Updated .env:"
+          echo "Setting RELEASE_VERSION=${{ env.RELEASE_VERSION }} in .env"
+
+          # Ensure .env exists
+          touch .env
+
+          # Remove any existing RELEASE_VERSION line
+          grep -v '^RELEASE_VERSION=' .env > .env.tmp || true
+
+          # Add the new RELEASE_VERSION at the end
+          echo "RELEASE_VERSION=${{ env.RELEASE_VERSION }}" >> .env.tmp
+
+          # Replace old .env with new one
+          mv .env.tmp .env
+
+          echo "Final .env:"
           cat .env
 
-          # Pull and restart services
+      - name: Deploy locally with Docker Compose
+        run: |
           docker compose pull
           docker compose up -d
