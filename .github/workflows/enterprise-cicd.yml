@@ -126,7 +126,7 @@ jobs:
 
   deploy-to-prod:
     runs-on: self-hosted
-    needs: build
+    needs: deploy-to-staging
     if: success()
     steps:
       - name: Deploy via docker compose
