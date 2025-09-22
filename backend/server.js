@@ -1,9 +1,18 @@
 import express from "express";
 import { Pool } from "pg";
 import postsRouterFactory from "./routes/posts.js";
-import pkg from "./package.json" assert { type: "json" };
+import { readFile } from 'fs/promises';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import cors from "cors";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const app = express();
+
+// Enable CORS for all routes
+app.use(cors());
 app.use(express.json());
 
 const {
@@ -34,6 +43,15 @@ async function init() {
   `);
 }
 
+// Read package.json for version
+let pkg = { version: '0.0.0' };
+try {
+  const pkgData = await readFile(new URL('./package.json', import.meta.url), 'utf8');
+  pkg = JSON.parse(pkgData);
+} catch (err) {
+  console.warn('Could not read package.json:', err.message);
+}
+
 app.get("/health", async (_req, res) => {
   try {
     await pool.query("SELECT 1");
@@ -52,7 +70,13 @@ app.get("/api/version", (_req, res) => {
 // API routes
 app.use("/api/posts", postsRouterFactory(pool));
 
-app.listen(PORT, async () => {
-  await init();
-  console.log(`Backend listening on ${PORT}`);
-});
+// Export the app for testing
+export { app };
+
+// Only start the server if this file is run directly
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, async () => {
+    await init();
+    console.log(`Backend listening on ${PORT}`);
+  });
+}
